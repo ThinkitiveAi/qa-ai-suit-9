@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Run Playwright Tests",
+			"command": "npx playwright test",
+			"group": "test",
+			"problemMatcher": [
+				"$mocha"
+			],
+			"args": []
+		}
+	]
+}
