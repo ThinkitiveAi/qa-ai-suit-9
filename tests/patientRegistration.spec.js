@@ -79,7 +79,7 @@ test('Patient Registration', async ({ page, context }) => {
     await page.click('button:has-text("Save")');
 
     // Wait for patient to be saved
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(7000);
     const patientFullName = patient.firstName + "  " + patient.lastName;
     console.log("Verifying patient in list:", patientFullName);
     
