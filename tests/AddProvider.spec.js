@@ -1,12 +1,12 @@
 const { test, expect } = require('@playwright/test');
 const { faker } = require('@faker-js/faker');
-const providerConfig = require('./utils/testData');
+const providerConfig = require('../utils/testData');
 
 // Generate dynamic provider data using Faker
 function generateProviderData() {
-  const firstName = faker.person.firstName('male');
+  const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
-  const email = faker.internet.email(firstName, lastName, 'mailinator.com').toLowerCase();
+  const email = (firstName+'@mailinator.com').toLowerCase();
   
   return {
     firstName,
@@ -88,16 +88,10 @@ test.describe('Provider Management', () => {
       
       // Fill Last Name
       await page.fill(providerConfig.selectors.providerForm.lastNameField, providerData.lastName);
-      
-      // Select Role dropdown and choose Provider
-      await page.evaluate(() => {
-        const roleField = document.querySelectorAll('[role="combobox"], .MuiAutocomplete-input')[3];
-        if (roleField) {
-          roleField.click();
-        }
-      });
-      
-      await page.waitForTimeout(500);
+      // Wait for role dropdown to be visible and click
+      const roleDropdownBtn = page.locator('input[name="role"]').locator('xpath=ancestor::div[contains(@class,"MuiFormControl-root") or contains(@class,"MuiTextField-root")]/descendant::button');
+      await expect(roleDropdownBtn).toBeVisible({ timeout: 5000 });
+      await roleDropdownBtn.click();
       
       // Type and select Provider
       await page.evaluate((role) => {
@@ -110,51 +104,26 @@ test.describe('Provider Management', () => {
       }, providerData.role);
       
       // Try to select from dropdown options
-      await page.waitForTimeout(500);
-      const roleOption = page.locator('[role="option"]:has-text("Provider")');
+      await page.waitForTimeout(2000);
+      const roleOption = page.locator(`[role="option"]:has-text("${providerData.role}")`);
       if (await roleOption.isVisible()) {
         await roleOption.click();
       }
       
-      // Select Gender dropdown and choose Male
-      await page.evaluate(() => {
-        const genderField = document.querySelectorAll('[role="combobox"], .MuiAutocomplete-input')[4];
-        if (genderField) {
-          genderField.click();
-        }
-      });
-      
-      await page.waitForTimeout(500);
-      
-      // Type and select Male
-      await page.evaluate((gender) => {
-        const genderField = document.querySelectorAll('[role="combobox"], .MuiAutocomplete-input')[4];
-        if (genderField) {
-          genderField.value = gender;
-          genderField.dispatchEvent(new Event('input', { bubbles: true }));
-          genderField.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      }, providerData.gender);
-      
-      // Try to select from dropdown options
-      await page.waitForTimeout(500);
-      const genderOption = page.locator('[role="option"]:has-text("Male")');
-      if (await genderOption.isVisible()) {
-        await genderOption.click();
-      }
+      // Select Gender dropdown and choose Male using Playwright locators
+      const genderDropdown = page.locator('input[name="gender"]').locator('xpath=ancestor::div[contains(@class,"MuiFormControl-root") or contains(@class,"MuiTextField-root")]/descendant::button');
+      await expect(genderDropdown).toBeVisible({ timeout: 5000 });
+      await genderDropdown.click();
+      // Select Male from dropdown
+      const genderOption = page.getByRole('option', { name: providerConfig.mandatoryFields.defaultGender, exact: true });
+      await expect(genderOption).toBeVisible({ timeout: 5000 });
+      await genderOption.click();
       
       // Fill Email
-      await page.evaluate((email) => {
-        const allInputs = document.querySelectorAll('input[type="text"]');
-        allInputs.forEach((input) => {
-          const container = input.closest('.MuiFormControl-root, .MuiTextField-root');
-          if (container && container.textContent.includes('Email')) {
-            input.value = email;
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-        });
-      }, providerData.email);
+      const email =  page.locator('//input[@name="email"]');
+      email.click();
+      await email.fill(providerData.email);
+
       
       console.log('Filled all mandatory fields');
     });

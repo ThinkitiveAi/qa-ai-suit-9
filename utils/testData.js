@@ -17,7 +17,7 @@
   // Provider form mandatory fields
   mandatoryFields: {
     roles: ['Provider', 'Admin', 'Staff'],
-    genders: ['Male', 'Female', 'Other'],
+    genders: ['Male', 'Female', 'Others'],
     defaultRole: 'Provider',
     defaultGender: 'Male'
   },
@@ -80,7 +80,7 @@
       lastNameField: 'input[placeholder="Last Name"]',
       roleField: '[role="combobox"]:has-text("Role")',
       genderField: '[role="combobox"]:has-text("Gender")',
-      emailField: 'input[placeholder*="Email"]',
+      emailField: 'input[placeholder*="Enter Email"]',
       saveButton: ':text("Save")'
     },
     validation: {
@@ -103,23 +103,3 @@
 };
 
 module.exports = providerConfig;
-
-
-
-
-
-
-// module.exports = {
-//   url: 'https://stage_ketamin.uat.provider.ecarehealth.com/',
-//   username: 'amol.shete+TP@medarch.com',
-//   password: 'Test@123$',
-//   timeout: 30000
-// }; 
-
-//  timeouts: {
-//     pageLoad: 30000,
-//     elementWait: 10000,
-//     shortDelay: 1000,
-//     mediumDelay: 2000,
-//     longDelay: 3000
-//   };
