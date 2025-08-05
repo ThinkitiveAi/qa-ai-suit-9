@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { faker } = require('@faker-js/faker');
-const providerConfig = require('../utils/testData');
+const providerConfig = require('../../utils/testData.js');
 
 // Generate dynamic provider data using Faker
 function generateProviderData() {
@@ -31,8 +31,8 @@ test.describe('Provider Management', () => {
 
     // Step 1: Navigate to login page
     await test.step('Navigate to login page', async () => {
-      await page.goto(providerConfig.urls.loginUrl);
-      await expect(page).toHaveURL(providerConfig.urls.loginUrl);
+    await page.goto(providerConfig.urls.loginUrl);
+    await expect(page).toHaveURL(providerConfig.urls.loginUrl);
       await page.waitForLoadState('networkidle');
     });
 
@@ -40,16 +40,10 @@ test.describe('Provider Management', () => {
     await test.step('Login with credentials', async () => {
       // Fill username
       await page.fill(providerConfig.selectors.login.usernameField, providerConfig.loginCredentials.username);
-      
-      // Fill password
       await page.fill(providerConfig.selectors.login.passwordField, providerConfig.loginCredentials.password);
-      
-      // Click login button
       await page.click(providerConfig.selectors.login.loginButton);
-      
-      // Wait for dashboard to load
       await page.waitForLoadState('networkidle');
-      await expect(page.locator(':text("Dashboard")')).toBeVisible();
+      await expect(page).toHaveURL(providerConfig.urls.dashboardUrl);
     });
 
     // Step 3: Navigate to Settings
@@ -62,7 +56,7 @@ test.describe('Provider Management', () => {
     await test.step('Navigate to User Settings', async () => {
       await page.goto(providerConfig.urls.userSettingsUrl);
       await page.waitForLoadState('networkidle');
-      await expect(page.locator(':text("Providers")')).toBeVisible();
+      await expect(page.locator(providerConfig.selectors.navigation.providersTab)).toBeVisible();
     });
 
     // Step 5: Click on Providers tab
@@ -76,8 +70,6 @@ test.describe('Provider Management', () => {
     await test.step('Click on Add Provider User', async () => {
       await page.click(providerConfig.selectors.navigation.addProviderButton);
       await page.waitForTimeout(providerConfig.timeouts.mediumDelay);
-      
-      // Wait for form to load
       await expect(page.locator(providerConfig.selectors.providerForm.firstNameField)).toBeVisible();
     });
 
@@ -85,46 +77,16 @@ test.describe('Provider Management', () => {
     await test.step('Fill mandatory provider details', async () => {
       // Fill First Name
       await page.fill(providerConfig.selectors.providerForm.firstNameField, providerData.firstName);
-      
-      // Fill Last Name
       await page.fill(providerConfig.selectors.providerForm.lastNameField, providerData.lastName);
-      // Wait for role dropdown to be visible and click
-      const roleDropdownBtn = page.locator('input[name="role"]').locator('xpath=ancestor::div[contains(@class,"MuiFormControl-root") or contains(@class,"MuiTextField-root")]/descendant::button');
-      await expect(roleDropdownBtn).toBeVisible({ timeout: 5000 });
-      await roleDropdownBtn.click();
-      
-      // Type and select Provider
-      await page.evaluate((role) => {
-        const roleField = document.querySelectorAll('[role="combobox"], .MuiAutocomplete-input')[3];
-        if (roleField) {
-          roleField.value = role;
-          roleField.dispatchEvent(new Event('input', { bubbles: true }));
-          roleField.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      }, providerData.role);
-      
-      // Try to select from dropdown options
-      await page.waitForTimeout(2000);
+      await page.click(providerConfig.selectors.providerForm.roleField);
       const roleOption = page.locator(`[role="option"]:has-text("${providerData.role}")`);
-      if (await roleOption.isVisible()) {
-        await roleOption.click();
-      }
-      
-      // Select Gender dropdown and choose Male using Playwright locators
-      const genderDropdown = page.locator('input[name="gender"]').locator('xpath=ancestor::div[contains(@class,"MuiFormControl-root") or contains(@class,"MuiTextField-root")]/descendant::button');
-      await expect(genderDropdown).toBeVisible({ timeout: 5000 });
-      await genderDropdown.click();
-      // Select Male from dropdown
-      const genderOption = page.getByRole('option', { name: providerConfig.mandatoryFields.defaultGender, exact: true });
+      await expect(roleOption).toBeVisible({ timeout: 5000 });
+      await roleOption.click();
+      await page.click(providerConfig.selectors.providerForm.genderField);
+      const genderOption = page.locator(`[role="option"]:has-text("${providerData.gender}")`);
       await expect(genderOption).toBeVisible({ timeout: 5000 });
       await genderOption.click();
-      
-      // Fill Email
-      const email =  page.locator('//input[@name="email"]');
-      email.click();
-      await email.fill(providerData.email);
-
-      
+      await page.fill(providerConfig.selectors.providerForm.emailField, providerData.email);
       console.log('Filled all mandatory fields');
     });
 
@@ -144,14 +106,10 @@ test.describe('Provider Management', () => {
       
       // Check if we're back on the providers list page
       const isOnProvidersList = await page.locator(providerConfig.selectors.navigation.addProviderButton).isVisible();
-      
       if (isOnProvidersList) {
-        // Search for the newly created provider in the list
-        // Look for the provider by name or email
-        const providerExists = await page.locator(`text=${providerData.firstName}`, { timeout: 5000 }).isVisible().catch(() => false) ||
-                              await page.locator(`text=${providerData.lastName}`, { timeout: 5000 }).isVisible().catch(() => false) ||
-                              await page.locator(`text=${providerData.email}`, { timeout: 5000 }).isVisible().catch(() => false);
-        
+        const providerExists = await page.locator(`text=${providerData.firstName}`).isVisible().catch(() => false) ||
+                              await page.locator(`text=${providerData.lastName}`).isVisible().catch(() => false) ||
+                              await page.locator(`text=${providerData.email}`).isVisible().catch(() => false);
         if (providerExists) {
           console.log('✅ Provider successfully created and found in the list');
           expect(providerExists).toBeTruthy();
@@ -159,9 +117,7 @@ test.describe('Provider Management', () => {
           console.log('⚠️  Provider created but not immediately visible in list (may need refresh)');
         }
       } else {
-        // Check for validation errors
         const hasValidationError = await page.locator(providerConfig.selectors.validation.emailError).isVisible().catch(() => false);
-        
         if (hasValidationError) {
           console.log('❌ Validation error occurred - check form inputs');
           throw new Error('Form validation failed - Please check email format');
