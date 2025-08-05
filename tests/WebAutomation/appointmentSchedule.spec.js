@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const { faker } = require('@faker-js/faker');
-const testData = require('../utils/testData');
-const sharedTestData = require('../utils/sharedTestData');
+const testData = require('../../utils/testData');
+const sharedTestData = require('../../utils/sharedTestData');
 
 // Utility function to get dynamic appointment details
 function getAppointmentDetails() {
