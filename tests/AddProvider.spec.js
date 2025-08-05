@@ -1,12 +1,12 @@
 const { test, expect } = require('@playwright/test');
 const { faker } = require('@faker-js/faker');
-const providerConfig = require('./utils/testData');
+const providerConfig = require('../../utils/testData.js');
 
 // Generate dynamic provider data using Faker
 function generateProviderData() {
   const firstName = faker.person.firstName('male');
   const lastName = faker.person.lastName();
-  const email = faker.internet.email(firstName, lastName, 'mailinator.com').toLowerCase();
+  const email = faker.internet.email(firstName+'@mailinator.com').toLowerCase();
   
   return {
     firstName,
@@ -19,11 +19,7 @@ function generateProviderData() {
 
 test.describe('Provider Management', () => {
   test('Add Provider User – Mandatory Fields', async ({ page }) => {
-    // Set browser to Chromium (default in Playwright)
-    // Configure viewport and timeout
-    await page.setViewportSize({ width: 1280, height: 720 });
-    page.setDefaultTimeout(providerConfig.timeouts.pageLoad);
-    
+
     // Generate dynamic provider data
     const providerData = generateProviderData();
     
