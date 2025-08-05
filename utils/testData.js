@@ -11,6 +11,7 @@
     baseUrl: 'https://stage_aithinkitive.uat.provider.ecarehealth.com',
     loginUrl: 'https://stage_aithinkitive.uat.provider.ecarehealth.com/auth/login',
     dashboardUrl: 'https://stage_aithinkitive.uat.provider.ecarehealth.com/app/provider/dashboard',
+    ScheduleUrl:'https://stage_aithinkitive.uat.provider.ecarehealth.com/app/provider/scheduling/appointment',
     userSettingsUrl: 'https://stage_aithinkitive.uat.provider.ecarehealth.com/app/provider/settings/user-settings'
   },
 
