@@ -23,26 +23,6 @@
     defaultGender: 'Male'
   },
 
-  // Provider types and specialties (optional fields)
-  providerTypes: [
-    'Primary Care Physician',
-    'Specialist',
-    'Nurse Practitioner',
-    'Physician Assistant'
-  ],
-
-  specialties: [
-    'Cardiology',
-    'Dermatology',
-    'Emergency Medicine',
-    'Family Medicine',
-    'Internal Medicine',
-    'Neurology',
-    'Orthopedics',
-    'Pediatrics',
-    'Psychiatry',
-    'Surgery'
-  ],
 
   // Test data templates
   testDataTemplates: {

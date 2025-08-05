@@ -30,12 +30,12 @@ test('Patient Registration', async ({ page, context }) => {
   try {
     const patient = getPatientDetails();
     // Navigate to the staging URL
-    await page.goto(testData.url);
+    await page.goto(testData.urls.loginUrl);
 
     // Login with provided credentials
     await page.waitForSelector('input[name="username"]', { timeout: 10000 });
-    await page.fill('input[name="username"]', testData.username);
-    await page.fill('input[type="password"]', testData.password);
+    await page.fill('input[name="username"]', testData.loginCredentials.username);
+    await page.fill('input[type="password"]', testData.loginCredentials.password);
     await page.click('button:has-text("Let\'s get Started")');
 
     // Wait for navigation after login
