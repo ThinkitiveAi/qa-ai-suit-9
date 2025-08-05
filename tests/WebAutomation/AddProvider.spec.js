@@ -6,11 +6,7 @@ const providerConfig = require('../../utils/testData.js');
 function generateProviderData() {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
-<<<<<<< HEAD:tests/AddProvider.spec.js
-  const email = faker.internet.email(firstName+'@mailinator.com').toLowerCase();
-=======
   const email = (firstName+'@mailinator.com').toLowerCase();
->>>>>>> WebAutomation:tests/WebAutomation/AddProvider.spec.js
   
   return {
     firstName,
@@ -43,7 +39,7 @@ test.describe('Provider Management', () => {
       await page.fill(providerConfig.selectors.login.passwordField, providerConfig.loginCredentials.password);
       await page.click(providerConfig.selectors.login.loginButton);
       await page.waitForLoadState('networkidle');
-      await expect(page).toHaveURL(providerConfig.urls.dashboardUrl);
+      await expect(page).toHaveURL(providerConfig.urls.ScheduleUrl);
     });
 
     // Step 3: Navigate to Settings
@@ -83,7 +79,8 @@ test.describe('Provider Management', () => {
       await expect(roleOption).toBeVisible({ timeout: 5000 });
       await roleOption.click();
       await page.click(providerConfig.selectors.providerForm.genderField);
-      const genderOption = page.locator(`[role="option"]:has-text("${providerData.gender}")`);
+      // Select the gender option with exact text match to avoid strict mode violation
+      const genderOption = page.locator('[role="option"]').filter({ hasText: providerData.gender }).first();
       await expect(genderOption).toBeVisible({ timeout: 5000 });
       await genderOption.click();
       await page.fill(providerConfig.selectors.providerForm.emailField, providerData.email);

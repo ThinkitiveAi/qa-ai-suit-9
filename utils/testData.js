@@ -79,8 +79,8 @@
     providerForm: {
       firstNameField: 'input[placeholder="First Name"]',
       lastNameField: 'input[placeholder="Last Name"]',
-      roleField: '[role="combobox"]:has-text("Role")',
-      genderField: '[role="combobox"]:has-text("Gender")',
+      roleField: '//input[@name="role"]',
+      genderField: '//input[@name="gender"]',
       emailField: 'input[placeholder*="Enter Email"]',
       saveButton: ':text("Save")'
     },
