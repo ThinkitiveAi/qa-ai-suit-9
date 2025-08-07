@@ -27,13 +27,25 @@
   // Test data templates
   testDataTemplates: {
     provider: {
-      firstName: 'Samual',
-      lastName: 'Wilson',
-      email: 'samual@mailinator.com',
+      firstName: 'Aileen',
+      lastName: 'Carter',
+      email: 'aileen@mailinator.com',
       role: 'Provider',
       gender: 'Male'
     }
   },
+
+  availabilityData: {
+    startTime: '01:00 AM',
+    endTime: '11:00 PM',
+    timeZone: 'Indian Standard Time (GMT +05:30)',
+    bookingWindow: '26 Weeks',
+    appointmentType: 'New Patient Visit',
+    duration: '30 Minutes',
+    visitType: 'Telehealth',
+    daysOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+  },
+
 
   // Timeouts and delays
   timeouts: {
